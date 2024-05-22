@@ -35,6 +35,8 @@ This shell contains a list of utilities for performing various actions on a murk
 
 murkmod is now maintained completely independently from fakemurk. Don't report any bugs you encounter with it to the fakemurk developers.
 
+Have fun and be carful! 
+
 EOF
     else
         cat /mnt/stateful_partition/custom_greeting
@@ -76,6 +78,7 @@ locked_main() {
     while true; do
         echo -ne "\033]0;mush\007"
         cat <<-EOF
+        OPTIONS
 (1) Emergency Revert & Re-Enroll
 (2) Soft Disable Extensions
 (3) Hard Disable Extensions
@@ -95,7 +98,7 @@ EOF
         6) runjob do_updates && exit 0 ;;
 
 
-        *) echo && echo "Invalid option, dipshit." && echo ;;
+        *) echo && echo "Invalid option, dipshit. Try again." && echo ;;
         esac
     done
 }
@@ -110,6 +113,7 @@ main() {
     while true; do
         echo -ne "\033]0;mush\007"
         cat <<-EOF
+        OPTIONS
 (1) Root Shell
 (2) Chronos Shell
 (3) Crosh
@@ -190,7 +194,7 @@ install_plugin_legacy() {
   local plugin_info=$(curl -s $plugin_url)
 
   if [[ $plugin_info == *"Not Found"* ]]; then
-    echo "Plugin not found"
+    echo "Plugin not found."
   else      
     echo "Installing..."
     doas "pushd /mnt/stateful_partition/murkmod/plugins && curl https://raw.githubusercontent.com/rainestorme/murkmod/main/plugins/$plugin_name -O && popd" > /dev/null
@@ -306,7 +310,7 @@ autodisableexts() {
 }
 
 set_passwd() {
-  echo "Enter a new password to use for mush. This will be required to perform any future administrative actions, so make sure you write it down somewhere!"
+  echo "Enter a new password to use for mush. This will be required to perform any future administrative actions, so make sure you write it down somewhere and remember it!"
   read -r -p " > " newpassword
   doas "touch /mnt/stateful_partition/murkmod/mush_password"
   doas "echo '$newpassword'> /mnt/stateful_partition/murkmod/mush_password"
@@ -564,7 +568,7 @@ uninstall_plugins() {
         read -r -p "Are you sure you want to uninstall $plugin_name? [y/n] " confirm
         if [ "$confirm" == "y" ]; then
             doas rm "$plugin_file"
-            echo "$plugin_name uninstalled."
+            echo "$plugin_name sucessfully uninstalled."
             unset plugin_info[$index]
             plugin_info=("${plugin_info[@]}")
         fi
@@ -574,7 +578,7 @@ uninstall_plugins() {
 powerwash() {
     echo "Are you sure you wanna powerwash? This will remove all user accounts and data, but won't remove fakemurk."
     sleep 2
-    echo "(Press enter to continue, ctrl-c to cancel)"
+    echo "(Press enter to continue, ctrl-c to cancel. This is your last chance!)"
     swallow_stdin
     read -r
     doas rm -f /stateful_unfucked
